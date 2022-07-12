@@ -142,14 +142,14 @@
       this[globalName] = mainExports;
     }
   }
-})({"7Jqde":[function(require,module,exports) {
+})({"1JkFj":[function(require,module,exports) {
 "use strict";
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = 1234;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "9925d61347535d9a";
-module.bundle.HMR_BUNDLE_ID = "a3007df7e6852652";
+module.bundle.HMR_BUNDLE_ID = "ff47285c7f2d285f";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, globalThis, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
   HMRAsset,
@@ -531,33 +531,70 @@ function hmrAcceptRun(bundle, id) {
     acceptedAssets[id] = true;
 }
 
-},{}],"axn1x":[function(require,module,exports) {
+},{}],"ekQAT":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _definePropertyMjs = require("@swc/helpers/src/_define_property.mjs");
 var _definePropertyMjsDefault = parcelHelpers.interopDefault(_definePropertyMjs);
+var _lightStepperScss = require("../scss/light_stepper.scss");
 class LightStepper {
     constructor({ pagination , steps , prev , next  }){
+        // eventInformation = {
+        //     bubbles: true,
+        //     cancelable: true,
+        //     composed: false,
+        //     detail: {
+        //         current_step: Math.abs(this.step),
+        //         prev_step: Math.abs(this.step - 1) < 1 ? 1 : Math.abs(this.step - 1)
+        //     }
+        // }
         (0, _definePropertyMjsDefault.default)(this, "init", ()=>{
-            console.log("init");
+            this.setupStepsList(this.pagination, false);
+            this.setupStepsList(this.steps, true);
+            this.showStep(this.step);
+            // TODO: fix steps switch
+            if (this.next) this.next.addEventListener("click", (e)=>{
+                if (this.step < this.steps.length) this.showStep(this.step++);
+                console.log(this.step);
+            });
+            if (this.prev) this.prev.addEventListener("click", (e)=>{
+                if (this.step >= 1) this.showStep(this.step--);
+                else {
+                    this.step = 1;
+                    this.showStep(1);
+                }
+                console.log(this.step);
+            });
         });
-        (0, _definePropertyMjsDefault.default)(this, "showStep", (step)=>{
-            console.log(this.start_step);
-        });
-        this.pagination = document.querySelector(pagination) ? document.querySelector(pagination).children : null;
-        this.steps = document.querySelector(steps) ? document.querySelector(steps).children : null;
-        this.start_step = 1;
-        this.prev = document.querySelector(prev);
-        this.next = document.querySelector(next);
-        this.step_changed = new CustomEvent("step_changed", {
-            bubbles: true,
-            cancelable: true,
-            composed: false,
-            detail: {
-                current_step: Math.abs(this.start_step),
-                prev_step: Math.abs(this.start_step - 1) < 1 ? 1 : Math.abs(this.start_step - 1)
+        // TODO: rewrite this method
+        (0, _definePropertyMjsDefault.default)(this, "setupStepsList", (nodeList, hideNotCurrentItems)=>{
+            if (nodeList) for (const [index, item] of Object.keys(nodeList)){
+                nodeList.item(index).setAttribute("step", parseInt(index));
+                // nodeList.item(index).classList.add('step');
+                if (hideNotCurrentItems && this.step !== parseInt(index)) nodeList.item(index).classList.add("step--hidden");
+                else nodeList.item(index).classList.remove("step--hidden");
             }
         });
-        this.showStep(this.start_step);
+        (0, _definePropertyMjsDefault.default)(this, "showStep", (step1)=>{
+            console.log(step1);
+            this.setupStepsList(this.steps, true);
+        // console.log(this.pagination.entries())
+        // for( let paginateItem of this.pagination){
+        //     console.log(paginateItem)
+        // }
+        // document.dispatchEvent(this.step_changed);
+        // document.addEventListener('step_changed', e => {
+        //     console.log(e)
+        // })
+        });
+        this.step = 0;
+        // set passed wrappers classes for pagination and steps and get his childrens if available 
+        this.pagination = document.querySelector(pagination) ? document.querySelector(pagination).children : null;
+        this.steps = document.querySelector(steps) ? document.querySelector(steps).children : null;
+        // set prev and next buttons
+        this.prev = document.querySelector(prev);
+        this.next = document.querySelector(next);
+        // change step event
+        // this.step_changed = new CustomEvent('step_changed', this.eventInformation);
         this.init();
     }
 }
@@ -569,7 +606,7 @@ const step = new LightStepper({
 }); // step.showStep(2)
  // console.log(step)
 
-},{"@swc/helpers/src/_define_property.mjs":"6tztx","@parcel/transformer-js/src/esmodule-helpers.js":"fKLKu"}],"6tztx":[function(require,module,exports) {
+},{"@swc/helpers/src/_define_property.mjs":"6tztx","../scss/light_stepper.scss":"c41jf","@parcel/transformer-js/src/esmodule-helpers.js":"fKLKu"}],"6tztx":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 function _defineProperty(obj, key, value) {
@@ -614,6 +651,6 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}]},["7Jqde","axn1x"], "axn1x", "parcelRequirea01a")
+},{}],"c41jf":[function() {},{}]},["1JkFj","ekQAT"], "ekQAT", "parcelRequirea01a")
 
-//# sourceMappingURL=ez_stepper.js.map
+//# sourceMappingURL=light_stepper.js.map
