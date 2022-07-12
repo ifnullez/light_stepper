@@ -540,60 +540,54 @@ var _definePropertyMjsDefault = parcelHelpers.interopDefault(_definePropertyMjs)
 var _lightStepperScss = require("../scss/light_stepper.scss");
 class LightStepper {
     constructor({ pagination , steps , prev , next  }){
-        // eventInformation = {
-        //     bubbles: true,
-        //     cancelable: true,
-        //     composed: false,
-        //     detail: {
-        //         current_step: Math.abs(this.step),
-        //         prev_step: Math.abs(this.step - 1) < 1 ? 1 : Math.abs(this.step - 1)
-        //     }
-        // }
         (0, _definePropertyMjsDefault.default)(this, "init", ()=>{
-            // init steps and steps pagination
-            this.setupStepsList(this.pagination, false);
-            this.setupStepsList(this.steps, true);
-            // show first step
-            this.showStep(this.step);
+            // show first step after loading stepper, this also init the steps
+            this.showStep();
+            this.firstInit = false;
             if (this.next) this.next.addEventListener("click", (e)=>{
                 if (this.step < this.steps.length - 1) this.step += 1;
-                this.showStep(this.step);
+                this.showStep();
             });
             if (this.prev) this.prev.addEventListener("click", (e)=>{
                 if (this.step < 1) this.step = 0;
                 else this.step -= 1;
-                this.showStep(this.step);
+                this.showStep();
             });
         });
-        // TODO: rewrite this method
-        (0, _definePropertyMjsDefault.default)(this, "setupStepsList", (nodeList, hideNotCurrentItems, isPagination)=>{
-            if (nodeList) for (const [index, item] of Object.keys(nodeList)){
-                let item = nodeList.item(index);
-                item.setAttribute("step", parseInt(index));
-                item.classList.add("step");
-                if ((hideNotCurrentItems || isPagination) && this.step != parseInt(index)) item.classList.add("step--hidden");
-                else item.classList.remove("step--hidden");
-            // if(isPagination && this.step != parseInt(index)){
-            //     item.classList.remove('step--current');
-            // } else {
-            //     item.classList.add('step--current');
-            // }
+        // TODO: update this method
+        (0, _definePropertyMjsDefault.default)(this, "stepperActions", (nodeList, isPagination, firstInit)=>{
+            if (nodeList.length > 0 && typeof nodeList !== "undefined") for(let i = 1; i <= nodeList.length; i++){
+                let item = nodeList.item(i - 1);
+                item.setAttribute("step", i);
+                if (!isPagination && typeof isPagination !== "undefined") {
+                    item.classList.add("step");
+                    if (this.step == i - 1) item.classList.remove("step--hidden");
+                    else item.classList.add("step--hidden");
+                } else {
+                    if (this.step == i - 1) item.classList.add("step__pagination--current");
+                    else item.classList.remove("step__pagination--current");
+                    item.classList.add("step__pagination");
+                    if (this.firstInit && typeof this.firstInit !== "undefined") item.addEventListener("click", (e)=>{
+                        let selectedStep = e.target.getAttribute("step");
+                        this.step = selectedStep - 1;
+                        this.showStep();
+                    });
+                }
             }
         });
-        (0, _definePropertyMjsDefault.default)(this, "showStep", (step1)=>{
-            console.log(step1);
-            this.setupStepsList(this.steps, true, false);
-            this.setupStepsList(this.pagination, false, true);
+        // maybe need to remove that and update current working logic
+        (0, _definePropertyMjsDefault.default)(this, "showStep", ()=>{
+            this.stepperActions(this.steps, false);
+            this.stepperActions(this.pagination, true);
         });
         this.step = 0;
+        this.firstInit = true;
         // set passed wrappers classes for pagination and steps and get his childrens if available 
         this.pagination = document.querySelector(pagination) ? document.querySelector(pagination).children : null;
         this.steps = document.querySelector(steps) ? document.querySelector(steps).children : null;
         // set prev and next buttons
         this.prev = document.querySelector(prev);
         this.next = document.querySelector(next);
-        // change step event
-        // this.step_changed = new CustomEvent('step_changed', this.eventInformation);
         this.init();
     }
 }
