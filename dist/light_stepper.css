@@ -2,4 +2,9 @@
   display: none;
 }
 
+.step--current {
+  color: #058f07;
+  font-weight: 600;
+}
+
 /*# sourceMappingURL=light_stepper.css.map */

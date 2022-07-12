@@ -1,6 +1,6 @@
 import "../scss/light_stepper.scss";
 
-class LightStepper {
+export default class LightStepper {
     
     constructor({
         pagination, 
@@ -32,59 +32,67 @@ class LightStepper {
     // }
 
     init = () => {
+        // init steps and steps pagination
         this.setupStepsList(this.pagination, false);
         this.setupStepsList(this.steps, true);
 
+        // show first step
         this.showStep(this.step);
-        // TODO: fix steps switch
+
         if( this.next ){
             this.next.addEventListener('click', e => {
-                if( this.step < this.steps.length){
-                    this.showStep(this.step++);
-                }
-                console.log(this.step)
-            })
-        }
-        if( this.prev ){
-            this.prev.addEventListener( 'click', e => {
-                if( this.step >= 1 ){
-                    this.showStep(this.step--);
-                } else {
-                    this.step = 1;
-                    this.showStep(1);
+
+                if( this.step < ( this.steps.length - 1 ) ){
+                    this.step += 1;
                 }
 
-                console.log(this.step)
+                this.showStep(this.step);
+            })
+        }
+
+        if( this.prev ){
+            this.prev.addEventListener( 'click', e => {
+
+                if(this.step < 1 ){
+                    this.step = 0;
+                } else {
+                    this.step -= 1;
+                }
+
+                this.showStep(this.step);
             })
         }
     }
     // TODO: rewrite this method
-    setupStepsList = (nodeList, hideNotCurrentItems) => {
+    setupStepsList = (nodeList, hideNotCurrentItems, isPagination) => {
         if(nodeList){
             for ( const [index, item] of Object.keys(nodeList)){
-                nodeList.item(index).setAttribute('step', parseInt(index));
-                // nodeList.item(index).classList.add('step');
-                if(hideNotCurrentItems && this.step !== parseInt(index) ){
-                    nodeList.item(index).classList.add('step--hidden');
+                let item = nodeList.item(index);
+                
+                item.setAttribute('step', parseInt(index));
+                item.classList.add('step');
+
+                if( ( hideNotCurrentItems || isPagination ) && this.step != parseInt(index) ){
+                    item.classList.add('step--hidden');
                 } else {
-                    nodeList.item(index).classList.remove('step--hidden');
+                    item.classList.remove('step--hidden');
                 }
+
+                // if(isPagination && this.step != parseInt(index)){
+                //     item.classList.remove('step--current');
+                // } else {
+                //     item.classList.add('step--current');
+                // }
+
             }
         }
     }
 
     showStep = (step) => {
         console.log(step)
-        this.setupStepsList(this.steps, true);
-
-        // console.log(this.pagination.entries())
-        // for( let paginateItem of this.pagination){
-        //     console.log(paginateItem)
-        // }
-        // document.dispatchEvent(this.step_changed);
-        // document.addEventListener('step_changed', e => {
-        //     console.log(e)
-        // })
+        this.setupStepsList(this.steps, true, false);
+        this.setupStepsList(this.pagination, false, true);
+        
     }
 
 }
@@ -95,5 +103,3 @@ const step = new LightStepper({
     prev: ".stepper_prev",
     next: ".stepper_next"
 });
-// step.showStep(2)
-// console.log(step)

@@ -533,6 +533,8 @@ function hmrAcceptRun(bundle, id) {
 
 },{}],"ekQAT":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>LightStepper);
 var _definePropertyMjs = require("@swc/helpers/src/_define_property.mjs");
 var _definePropertyMjsDefault = parcelHelpers.interopDefault(_definePropertyMjs);
 var _lightStepperScss = require("../scss/light_stepper.scss");
@@ -548,43 +550,40 @@ class LightStepper {
         //     }
         // }
         (0, _definePropertyMjsDefault.default)(this, "init", ()=>{
+            // init steps and steps pagination
             this.setupStepsList(this.pagination, false);
             this.setupStepsList(this.steps, true);
+            // show first step
             this.showStep(this.step);
-            // TODO: fix steps switch
             if (this.next) this.next.addEventListener("click", (e)=>{
-                if (this.step < this.steps.length) this.showStep(this.step++);
-                console.log(this.step);
+                if (this.step < this.steps.length - 1) this.step += 1;
+                this.showStep(this.step);
             });
             if (this.prev) this.prev.addEventListener("click", (e)=>{
-                if (this.step >= 1) this.showStep(this.step--);
-                else {
-                    this.step = 1;
-                    this.showStep(1);
-                }
-                console.log(this.step);
+                if (this.step < 1) this.step = 0;
+                else this.step -= 1;
+                this.showStep(this.step);
             });
         });
         // TODO: rewrite this method
-        (0, _definePropertyMjsDefault.default)(this, "setupStepsList", (nodeList, hideNotCurrentItems)=>{
+        (0, _definePropertyMjsDefault.default)(this, "setupStepsList", (nodeList, hideNotCurrentItems, isPagination)=>{
             if (nodeList) for (const [index, item] of Object.keys(nodeList)){
-                nodeList.item(index).setAttribute("step", parseInt(index));
-                // nodeList.item(index).classList.add('step');
-                if (hideNotCurrentItems && this.step !== parseInt(index)) nodeList.item(index).classList.add("step--hidden");
-                else nodeList.item(index).classList.remove("step--hidden");
+                let item = nodeList.item(index);
+                item.setAttribute("step", parseInt(index));
+                item.classList.add("step");
+                if ((hideNotCurrentItems || isPagination) && this.step != parseInt(index)) item.classList.add("step--hidden");
+                else item.classList.remove("step--hidden");
+            // if(isPagination && this.step != parseInt(index)){
+            //     item.classList.remove('step--current');
+            // } else {
+            //     item.classList.add('step--current');
+            // }
             }
         });
         (0, _definePropertyMjsDefault.default)(this, "showStep", (step1)=>{
             console.log(step1);
-            this.setupStepsList(this.steps, true);
-        // console.log(this.pagination.entries())
-        // for( let paginateItem of this.pagination){
-        //     console.log(paginateItem)
-        // }
-        // document.dispatchEvent(this.step_changed);
-        // document.addEventListener('step_changed', e => {
-        //     console.log(e)
-        // })
+            this.setupStepsList(this.steps, true, false);
+            this.setupStepsList(this.pagination, false, true);
         });
         this.step = 0;
         // set passed wrappers classes for pagination and steps and get his childrens if available 
@@ -603,8 +602,7 @@ const step = new LightStepper({
     pagination: ".stepper_pagination",
     prev: ".stepper_prev",
     next: ".stepper_next"
-}); // step.showStep(2)
- // console.log(step)
+});
 
 },{"@swc/helpers/src/_define_property.mjs":"6tztx","../scss/light_stepper.scss":"c41jf","@parcel/transformer-js/src/esmodule-helpers.js":"fKLKu"}],"6tztx":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
