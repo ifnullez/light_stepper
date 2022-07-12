@@ -1,9 +1,30 @@
-.step {
-    &--hidden {
-        display: none;
+.stepper_steps {
+    .step {
+        &--hidden {
+            display: none;
+        }
     }
-    &--current {
-        color: hsl(121, 93%, 29%);
-        font-weight: 600;
+}
+.stepper_pagination {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 10px;
+    .step {
+        &__pagination {
+            font-size: 18px;
+            line-height: 18px;
+            padding: 5px 10px;
+            border: 2px dashed #05a4c8;
+            border-radius: 100%;
+            background-color: #000;
+            color: #05a4c8;
+            &--current {
+                font-weight: 600;
+                background-color: #000;
+                color: #f4a460;
+                border: 2px dashed #f4a460;
+            }
+        }
     }
 }
