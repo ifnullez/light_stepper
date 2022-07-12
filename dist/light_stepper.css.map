@@ -1,1 +1,1 @@
-{"mappings":"AACI","sources":["src/scss/light_stepper.scss"],"sourcesContent":[".step {\n    &--hidden {\n        display: none;\n    }\n}"],"names":[],"version":3,"file":"light_stepper.css.map","sourceRoot":"../"}
+{"mappings":"AACI;;;;AAGA","sources":["src/scss/light_stepper.scss"],"sourcesContent":[".step {\n    &--hidden {\n        display: none;\n    }\n    &--current {\n        color: hsl(121, 93%, 29%);\n        font-weight: 600;\n    }\n}"],"names":[],"version":3,"file":"light_stepper.css.map","sourceRoot":"../"}
