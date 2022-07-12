@@ -553,11 +553,8 @@ class LightStepper {
             this.showStep(this.step);
             // TODO: fix steps switch
             if (this.next) this.next.addEventListener("click", (e)=>{
-                if (this.step <= this.steps.length) this.showStep(this.step++);
-                else {
-                    this.step = this.steps.length;
-                    this.showStep(this.steps.length);
-                }
+                if (this.step < this.steps.length) this.showStep(this.step++);
+                console.log(this.step);
             });
             if (this.prev) this.prev.addEventListener("click", (e)=>{
                 if (this.step >= 1) this.showStep(this.step--);
@@ -565,6 +562,7 @@ class LightStepper {
                     this.step = 1;
                     this.showStep(1);
                 }
+                console.log(this.step);
             });
         });
         // TODO: rewrite this method
@@ -608,7 +606,7 @@ const step = new LightStepper({
 }); // step.showStep(2)
  // console.log(step)
 
-},{"@swc/helpers/src/_define_property.mjs":"6tztx","@parcel/transformer-js/src/esmodule-helpers.js":"fKLKu","../scss/light_stepper.scss":"c41jf"}],"6tztx":[function(require,module,exports) {
+},{"@swc/helpers/src/_define_property.mjs":"6tztx","../scss/light_stepper.scss":"c41jf","@parcel/transformer-js/src/esmodule-helpers.js":"fKLKu"}],"6tztx":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 function _defineProperty(obj, key, value) {

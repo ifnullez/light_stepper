@@ -39,12 +39,10 @@ class LightStepper {
         // TODO: fix steps switch
         if( this.next ){
             this.next.addEventListener('click', e => {
-                if( this.step <= this.steps.length){
+                if( this.step < this.steps.length){
                     this.showStep(this.step++);
-                } else {
-                    this.step = this.steps.length;
-                    this.showStep(this.steps.length);
                 }
+                console.log(this.step)
             })
         }
         if( this.prev ){
@@ -55,6 +53,8 @@ class LightStepper {
                     this.step = 1;
                     this.showStep(1);
                 }
+
+                console.log(this.step)
             })
         }
     }
