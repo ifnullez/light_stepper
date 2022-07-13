@@ -1,4 +1,5 @@
 import "../scss/light_stepper.scss";
+import 'animate.css';
 
 export default class LightStepper {
     
@@ -6,10 +7,22 @@ export default class LightStepper {
         pagination, 
         steps, 
         prev, 
-        next
+        next,
+        step_class,
+        pagination_class,
+        step_active_class,
+        pagination_active_class,
+        // hide_out_step_class
     }){
         this.step = 0;
         this.firstInit = true;
+        // add start item classes
+        this.step_class = ( typeof step_class !== 'undefined' && typeof step_class !== null ) ? step_class : ['step'];
+        this.pagination_class = ( typeof pagination_class !== 'undefined' && typeof pagination_class !== null ) ? pagination_class : ['step__page'];
+        // add active item classes
+        this.step_active_class = ( typeof step_active_class !== 'undefined' && typeof step_active_class !== null ) ? step_active_class : ['step--current'];
+        this.pagination_active_class = ( typeof pagination_active_class !== 'undefined' && typeof pagination_active_class !== null ) ? pagination_active_class : ['step__page--current'];
+
         // set passed wrappers classes for pagination and steps and get his childrens if available 
         this.pagination = document.querySelector(pagination) ? document.querySelector(pagination).children : null;
         this.steps = document.querySelector(steps) ? document.querySelector(steps).children : null;
@@ -52,26 +65,33 @@ export default class LightStepper {
     }
     // TODO: update this method
     stepperActions = (nodeList, isPagination, firstInit ) => {
-
-        if(nodeList.length > 0 && typeof nodeList !== 'undefined'){
+        if(nodeList && typeof nodeList !== 'undefined'){
             for (let i = 1; i <= nodeList.length; i++) {
                 let item = nodeList.item(i - 1);
+
                 item.setAttribute('step', i);
+
                 if(!isPagination && typeof isPagination !== 'undefined') {
-                    item.classList.add('step');
+
+                    // add classes to the step item
+                    item.classList.add(...this.step_class);
+
                     if(this.step == ( i - 1 ) ){
-                        item.classList.remove('step--hidden');
+                        item.classList.add(...this.step_active_class);
                     } else {
-                        item.classList.add('step--hidden');
-                    }
-                } else {
-                    if(this.step == ( i - 1 ) ){
-                        item.classList.add('step__pagination--current');
-                    } else {
-                        item.classList.remove('step__pagination--current');
+                        item.classList.remove(...this.step_active_class);
                     }
 
-                    item.classList.add('step__pagination');
+                } else {
+                    
+                    if(this.step == ( i - 1 ) ){
+                        item.classList.add(...this.pagination_active_class);
+                    } else {
+                        item.classList.remove(...this.pagination_active_class);
+                    }
+                    
+                    // add classes to the pagnation items
+                    item.classList.add(...this.pagination_class);
 
                     if(this.firstInit && typeof this.firstInit !== 'undefined'){
                         item.addEventListener('click', e => {
@@ -85,7 +105,7 @@ export default class LightStepper {
             }
         }
     }
-    // maybe need to remove that and update current working logic
+
     showStep = () => {
         this.stepperActions(this.steps, false);
         this.stepperActions(this.pagination, true);
@@ -97,5 +117,7 @@ const step = new LightStepper({
     steps: ".stepper_steps",
     pagination: ".stepper_pagination",
     prev: ".stepper_prev",
-    next: ".stepper_next"
+    next: ".stepper_next",
+    step_class: ['step', 'animate__animated'],
+    step_active_class: ['step--current', 'animate__bounceInDown']
 });
