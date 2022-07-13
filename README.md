@@ -2,5 +2,5 @@
 - This is class created to speed up development steppers for the needed places in the site
 
 ## Used Techologies
-- Vanilla JS
-- Parcel [Link](https://parceljs.org)
+- [Parcel](https://parceljs.org)
+- All images I get from [Unsplash](https://unsplash.com)
