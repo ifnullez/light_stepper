@@ -112,12 +112,3 @@ export default class LightStepper {
     }
 
 }
-
-const step = new LightStepper({
-    steps: ".stepper_steps",
-    pagination: ".stepper_pagination",
-    prev: ".stepper_prev",
-    next: ".stepper_next",
-    step_class: ['step', 'animate__animated'],
-    step_active_class: ['step--current', 'animate__bounceInDown']
-});
