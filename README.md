@@ -1,5 +1,5 @@
 # Simple stepper
-- This is class created to speed up development steppers for the needed places in the site
+- This class are created to speed up development steppers for the needed places in the site
 
 ## Used Techologies
 - [Parcel](https://parceljs.org)
