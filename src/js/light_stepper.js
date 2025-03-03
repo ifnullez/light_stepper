@@ -28,6 +28,7 @@ export default class LightStepper {
     // Get pagination and steps elements
     this.pagination = document.querySelector(pagination)?.children || [];
     this.steps = document.querySelector(steps)?.children || [];
+    this.stepsCount = this.steps.length;
 
     // Get prev and next buttons
     this.prevButton = document.querySelector(prev);
@@ -40,34 +41,34 @@ export default class LightStepper {
     this.showStep();
     this.firstInit = false;
 
-    this.prevButton?.addEventListener("click", this.prevStep);
-    this.nextButton?.addEventListener("click", this.nextStep);
+    this.prevButton?.addEventListener("click", this.handlePrevStep);
+    this.nextButton?.addEventListener("click", this.handleNextStep);
   };
 
-  prevStep = () => {
-    const newStep =
-      this.currentStep < 1
-        ? this.allowOverscroll
-          ? this.steps.length - 1
-          : 0
-        : this.currentStep - 1;
-    if (this.isValidStep(newStep)) {
-      this.currentStep = newStep;
-      this.showStep();
+  #managePrevStep = () => {
+    if (this.currentStep < 1) {
+      return this.allowOverscroll ? this.stepsCount - 1 : 0;
+    } else {
+      return this.currentStep - 1;
     }
   };
 
-  nextStep = () => {
-    const newStep =
-      this.currentStep >= this.steps.length - 1
-        ? this.allowOverscroll
-          ? 0
-          : this.steps.length - 1
-        : this.currentStep + 1;
-    if (this.isValidStep(newStep)) {
-      this.currentStep = newStep;
-      this.showStep();
+  #manageNextStep = () => {
+    if (this.currentStep >= this.stepsCount - 1) {
+      return this.allowOverscroll ? 0 : this.stepsCount - 1;
+    } else {
+      return this.currentStep + 1;
     }
+  };
+
+  handlePrevStep = () => {
+    const newStep = this.#managePrevStep();
+    this.showStep(newStep);
+  };
+
+  handleNextStep = () => {
+    const newStep = this.#manageNextStep();
+    this.showStep(newStep);
   };
 
   stepperActions = (nodeList, isPagination) => {
@@ -96,18 +97,35 @@ export default class LightStepper {
         if (this.firstInit) {
           item.addEventListener("click", (e) => {
             const selectedStep = parseInt(e.target.getAttribute("step")) - 1;
-            if (this.isValidStep(selectedStep)) {
-              this.currentStep = selectedStep;
-              this.showStep();
-            }
+            this.showStep(selectedStep);
           });
         }
       }
     });
   };
 
-  showStep = () => {
+  showStep = (step) => {
+    if (step !== undefined && this.isValidStep(step, this)) {
+      this.currentStep = step;
+    }
     this.stepperActions(this.steps, false);
     this.stepperActions(this.pagination, true);
   };
 }
+
+const stepper = new LightStepper({
+  steps: ".stepper_steps",
+  pagination: ".stepper_pagination",
+  prev: ".stepper_prev",
+  next: ".stepper_next",
+  stepClass: ["step", "animate__animated"],
+  stepActiveClass: ["step--current", "animate__bounceInDown"],
+  allowOverscroll: false,
+  isValidStep: (step, stepper) => {
+    console.log(stepper);
+    if (step >= 3) {
+      return false;
+    }
+    return true;
+  },
+});
