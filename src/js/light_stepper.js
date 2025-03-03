@@ -1,117 +1,113 @@
 import "../scss/light_stepper.scss";
-import 'animate.css';
+import "animate.css";
 
 export default class LightStepper {
-
   constructor({
     pagination,
     steps,
     prev,
     next,
-    step_class,
-    pagination_class,
-    step_active_class,
-    pagination_active_class,
-    // hide_out_step_class
+    stepClass = ["step"],
+    paginationClass = ["step__page"],
+    stepActiveClass = ["step--current"],
+    paginationActiveClass = ["step__page--current"],
+    allowOverscroll = false,
+    isValidStep = () => true,
   }) {
-    this.step = 0;
+    this.currentStep = 0;
     this.firstInit = true;
-    // add start item classes
-    this.step_class = (typeof step_class !== 'undefined' && typeof step_class !== null) ? step_class : ['step'];
-    this.pagination_class = (typeof pagination_class !== 'undefined' && typeof pagination_class !== null) ? pagination_class : ['step__page'];
-    // add active item classes
-    this.step_active_class = (typeof step_active_class !== 'undefined' && typeof step_active_class !== null) ? step_active_class : ['step--current'];
-    this.pagination_active_class = (typeof pagination_active_class !== 'undefined' && typeof pagination_active_class !== null) ? pagination_active_class : ['step__page--current'];
 
-    // set passed wrappers classes for pagination and steps and get his childrens if available
-    this.pagination = document.querySelector(pagination) ? document.querySelector(pagination).children : null;
-    this.steps = document.querySelector(steps) ? document.querySelector(steps).children : null;
+    // Initialize class properties
+    this.stepClass = stepClass;
+    this.paginationClass = paginationClass;
+    this.stepActiveClass = stepActiveClass;
+    this.paginationActiveClass = paginationActiveClass;
+    this.allowOverscroll = allowOverscroll;
+    this.isValidStep = isValidStep;
 
-    // set prev and next buttons
-    this.prev = document.querySelector(prev);
-    this.next = document.querySelector(next);
+    // Get pagination and steps elements
+    this.pagination = document.querySelector(pagination)?.children || [];
+    this.steps = document.querySelector(steps)?.children || [];
+
+    // Get prev and next buttons
+    this.prevButton = document.querySelector(prev);
+    this.nextButton = document.querySelector(next);
 
     this.init();
   }
 
   init = () => {
-    // show first step after loading stepper, this also init the steps
     this.showStep();
     this.firstInit = false;
 
-    this.prev?.addEventListener('click', e => {
-      this.prevStep(this.step);
-    })
-    this.next?.addEventListener('click', e => {
-      this.nextStep();
-    })
-  }
+    this.prevButton?.addEventListener("click", this.prevStep);
+    this.nextButton?.addEventListener("click", this.nextStep);
+  };
+
   prevStep = () => {
-
-    if (this.step < 1) {
-      this.step = this.steps.length - 1;
-    } else {
-      this.step -= 1;
+    const newStep =
+      this.currentStep < 1
+        ? this.allowOverscroll
+          ? this.steps.length - 1
+          : 0
+        : this.currentStep - 1;
+    if (this.isValidStep(newStep)) {
+      this.currentStep = newStep;
+      this.showStep();
     }
-
-    this.showStep();
-  }
+  };
 
   nextStep = () => {
-    if (this.step < (this.steps.length - 1)) {
-      this.step += 1;
-    } else {
-      this.step = 0;
+    const newStep =
+      this.currentStep >= this.steps.length - 1
+        ? this.allowOverscroll
+          ? 0
+          : this.steps.length - 1
+        : this.currentStep + 1;
+    if (this.isValidStep(newStep)) {
+      this.currentStep = newStep;
+      this.showStep();
     }
-    console.log(this.step)
-    this.showStep();
-  }
-  // TODO: optimise this method
-  stepperActions = (nodeList, isPagination, firstInit) => {
-    if (nodeList && typeof nodeList !== 'undefined') {
-      for (let i = 1; i <= nodeList.length; i++) {
-        let item = nodeList.item(i - 1);
+  };
 
-        item.setAttribute('step', i);
+  stepperActions = (nodeList, isPagination) => {
+    Array.from(nodeList).forEach((item, index) => {
+      const stepIndex = index + 1;
+      item.setAttribute("step", stepIndex);
 
-        if (!isPagination && typeof isPagination !== 'undefined') {
-
-          // add classes to the step item
-          item.classList.add(...this.step_class);
-
-          if (this.step == (i - 1)) {
-            item.classList.add(...this.step_active_class);
-          } else {
-            item.classList.remove(...this.step_active_class);
-          }
-
+      if (!isPagination) {
+        // Add step classes and manage active class
+        item.classList.add(...this.stepClass);
+        if (this.currentStep === index) {
+          item.classList.add(...this.stepActiveClass);
         } else {
-
-          if (this.step == (i - 1)) {
-            item.classList.add(...this.pagination_active_class);
-          } else {
-            item.classList.remove(...this.pagination_active_class);
-          }
-
-          // add classes to the pagnation items
-          item.classList.add(...this.pagination_class);
-
-          if (this.firstInit && typeof this.firstInit !== 'undefined') {
-            item.addEventListener('click', e => {
-              let selectedStep = e.target.getAttribute('step');
-              this.step = selectedStep - 1;
-              this.showStep()
-            })
-          }
+          item.classList.remove(...this.stepActiveClass);
+        }
+      } else {
+        // Add pagination classes and manage active class
+        item.classList.add(...this.paginationClass);
+        if (this.currentStep === index) {
+          item.classList.add(...this.paginationActiveClass);
+        } else {
+          item.classList.remove(...this.paginationActiveClass);
         }
 
+        // Add click event listener for pagination items
+        if (this.firstInit) {
+          item.addEventListener("click", (e) => {
+            const selectedStep = parseInt(e.target.getAttribute("step")) - 1;
+            if (this.isValidStep(selectedStep)) {
+              this.currentStep = selectedStep;
+              this.showStep();
+            }
+          });
+        }
       }
-    }
-  }
+    });
+  };
 
   showStep = () => {
     this.stepperActions(this.steps, false);
     this.stepperActions(this.pagination, true);
-  }
-
+  };
 }
