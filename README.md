@@ -18,8 +18,7 @@ const stepper = new LightStepper({
   stepClass: ["step", "animate__animated"],
   stepActiveClass: ["step--current", "animate__bounceInDown"],
   allowOverscroll: false,
-  isValidStep: (step) => {
-    console.log(step);
+  isValidStep: (step, instance) => {
     if (step >= 3) {
       return false;
     }
