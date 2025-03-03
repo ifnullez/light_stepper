@@ -112,20 +112,3 @@ export default class LightStepper {
     this.stepperActions(this.pagination, true);
   };
 }
-
-const stepper = new LightStepper({
-  steps: ".stepper_steps",
-  pagination: ".stepper_pagination",
-  prev: ".stepper_prev",
-  next: ".stepper_next",
-  stepClass: ["step", "animate__animated"],
-  stepActiveClass: ["step--current", "animate__bounceInDown"],
-  allowOverscroll: false,
-  isValidStep: (step, stepper) => {
-    console.log(stepper);
-    if (step >= 3) {
-      return false;
-    }
-    return true;
-  },
-});
