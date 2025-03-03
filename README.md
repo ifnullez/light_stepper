@@ -9,7 +9,7 @@
 
 ## Example usage
 
-```
+```JavaScript
 const stepper = new LightStepper({
   steps: ".stepper_steps",
   pagination: ".stepper_pagination",
